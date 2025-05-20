@@ -1,0 +1,8 @@
+{
+  "local.dependencies": {
+    "mle-tools-node": "file:../mle-tools-node/dist"
+  },
+  "remote.dependencies": {
+    "mle-tools-node": "^1.12.3"
+  }
+}

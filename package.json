@@ -1,0 +1,30 @@
+{
+  "name": "com.mlefree.best_practices",
+  "version": "0.0.3",
+  "description": "mle best practices",
+  "author": "@mlefree",
+  "engines": {
+    "node": ">=22.x"
+  },
+  "scripts": {
+    "bp:_clean": "rm -rf package-lock.json node_modules .gen .logs .nyc_output .logs .output.txt .coverage .coverage_temp dist app && npm i",
+    "bp:bump": "OLD_VERSION=\"v$(node -e \"console.log(require('./package.json').version)\")\" && VERSION=\"$(npm version patch --no-git-tag-version)\" && npm i && echo \"export const bpInfo={version:'$VERSION'}\" > ./src/bpInfo.ts && git tag $OLD_VERSION && git checkout -b $VERSION",
+    "bp:update-changelog": "node ./scripts/bp/update-changelog-date.js",
+    "bp:use-local-deps": "node ./scripts/bp/switch-dependencies.js local && npm run bp:_clean",
+    "bp:use-remote-deps": "node ./scripts/bp/switch-dependencies.js remote && npm run bp:_clean",
+    "bp:squash-branch": "node ./scripts/bp/squash-commits.js",
+    "bp:release": "git add . && git commit -m \"chore: release v$(node -p \"require('./package.json').version\")\" && git push",
+    "bp:release:package": "git checkout package && git merge main && git push && git checkout main",
+    "bp:release:sandbox": "git checkout sandbox && git merge main && git push && git checkout main",
+    "all": "node ./scripts/find-projects.js && node ./scripts/check-project-type.js && node ./scripts/check-gitignore.js && node ./scripts/check-memory-bank.js && node ./scripts/check-scripts.js && node ./scripts/clean-release-scripts.js",
+    "find-projects": "node ./scripts/find-projects.js",
+    "check-project-type": "node ./scripts/check-project-type.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "mle-tools-node": "^1.12.3"
+  },
+  "devDependencies": {
+    "mocha": "^11.4.0"
+  }
+}
