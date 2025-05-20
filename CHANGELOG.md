@@ -7,9 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Version bump
+
+## [0.0.3] - 2025-05-20
+
+### Added
+
+- Added `check-memory-bank.js` script to verify memory bank documentation
+- Added `check-scripts.js` script to verify scripts compliance
+- Added `check-project-type.js` script to identify project types
+- Added `clean-release-scripts.js` script to manage release scripts
+- Added npm script `check-project-type` to run the project type identification
+- Added npm script `all` to run all compliance checks in sequence
+
 ## [0.0.2] - 2025-05-06
 
 ### Added
+
 - Added `find-projects.js` script to discover projects with bpstatus.json files
 - Added `check-gitignore.js` script to verify .gitignore compliance in projects
 - Added npm script `find-projects` to run the discovery script
@@ -20,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Created memory bank documentation for project knowledge retention
 
 ### Changed
+
 - Refactored common functionality into shared methods in common.js
 - Added formatDate() utility function for consistent date formatting
 - Added updateBpStatus() function to centralize bpstatus.json updates

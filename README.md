@@ -145,46 +145,6 @@ mle-best-practices/
 └── package.json        # npm package configuration
 ```
 
-## 🗺️ Roadmap
-
-### Current Status
-
-- **Version**: 0.0.3 (Development in progress)
-- **Phase**: Enhanced functionality implemented
-- **Focus**: Project discovery, compliance checking, reporting, and project type management
-
-### Next Milestones
-
-1. **Version 0.1.0**: Enhanced project analysis with bpstatus.json content parsing
-2. **Version 0.2.0**: Visualization tools and metrics
-3. **Version 0.3.0**: Automated compliance checking
-4. **Version 1.0.0**: Full-featured best practices management system
-
-### Planned Features
-
-1. **Additional Compliance Checks**:
-    - Check for proper package.json structure and essential fields
-    - Check for presence of essential files (README.md, LICENSE, etc.)
-    - Check for proper testing setup and configuration
-    - Check for proper CI/CD configuration
-    - Check for security best practices
-
-2. **Enhanced Project Analysis**:
-    - Aggregate and analyze the content of bpstatus.json files across projects
-    - Calculate overall compliance scores and metrics
-    - Track compliance changes over time
-
-3. **Visualization Tools**:
-    - Generate visual representations of best practices adoption
-    - Create dashboards to display compliance status across projects
-    - Provide charts to track progress over time
-
-4. **Automation Features**:
-    - Automatically fix non-compliant aspects where possible
-    - Implement scheduled compliance checks
-    - Add CI/CD pipeline integration
-    - Create a notification system for compliance changes
-
 ## 👥 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.

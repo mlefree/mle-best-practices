@@ -78,6 +78,15 @@ function updatePackageJsonScripts(projectPath) {
             packageJson.scripts = {};
         }
 
+        // Remove old existing bp:* scripts
+        Object.keys(packageJson.scripts).forEach(key => {
+            if (key.startsWith('bp:')) {
+                delete packageJson.scripts[key];
+                packageJsonUpdated = true;
+                console.log(`Removed old ${key} script from ${path.basename(projectPath)}/package.json`);
+            }
+        });
+
         // Add all bp:** scripts
         for (const [key, value] of Object.entries(bpScripts)) {
             packageJson.scripts[key] = value;
@@ -229,9 +238,7 @@ for (const project of allProjects) {
 
     if (isExcluded) {
         console.log(`${project.projectName}: Script ${scriptName} is excluded by bpstatus.json exclude rules, skipping...`);
-    } else if (bpStatus.status && bpStatus.status['scripts']) {
-        console.log(`${project.projectName} has scripts in bpstatus.json status, processing...`);
-
+    } else {
         // Copy BP script files
         const copyResult = copyBpScripts(project.projectPath);
         scriptsUpdated = copyResult.scriptsUpdated;
@@ -245,12 +252,11 @@ for (const project of allProjects) {
 
     // Only update bpstatus.json if the script is not excluded
     if (!isExcluded) {
-      bpStatusUpdated = common.updateBpStatus(project.bpStatusPath, 'check-scripts');
+        bpStatusUpdated = common.updateBpStatus(project.bpStatusPath, 'check-scripts');
     }
 
     results.push({
         ...project,
-        scriptsEnabled: bpStatus.status && !!bpStatus.status['scripts'],
         isExcluded,
         scriptsUpdated,
         scriptsCopied,
@@ -264,17 +270,16 @@ for (const project of allProjects) {
 
 // Generate markdown report
 let markdown = common.generateMarkdownHeader('Projects Scripts Status');
-markdown += common.generateMarkdownTableHeader(['Project Name', 'Project Path', 'Scripts Enabled', 'Excluded', 'Script Files Updated', 'Script Files Copied', 'Package.json Updated', 'BP Scripts Added', 'bpstatus.json Updated']);
+markdown += common.generateMarkdownTableHeader(['Project Name', 'Project Path', 'Excluded', 'Script Files Updated', 'Script Files Copied', 'Package.json Updated', 'BP Scripts Added', 'bpstatus.json Updated']);
 
 for (const result of results) {
-    markdown += `| ${result.projectName} | ${result.projectPath} | ${result.scriptsEnabled ? '✅' : '❌'} | ${result.isExcluded ? '✅' : '❌'} | ${result.scriptsUpdated ? '✅' : '❌'} | ${result.scriptsCopied} | ${result.packageJsonUpdated ? '✅' : '❌'} | ${result.scriptsAdded} | ${result.bpStatusUpdated ? '✅' : '❌'} |\n`;
+    markdown += `| ${result.projectName} | ${result.projectPath} | ${result.isExcluded ? '✅' : '❌'} | ${result.scriptsUpdated ? '✅' : '❌'} | ${result.scriptsCopied} | ${result.packageJsonUpdated ? '✅' : '❌'} | ${result.scriptsAdded} | ${result.bpStatusUpdated ? '✅' : '❌'} |\n`;
 }
 
 // Add summary
 const summaryData = {
     'Total projects found': results.length,
     'Projects excluded by rules': results.filter(r => r.isExcluded).length,
-    'Projects with scripts enabled': results.filter(r => r.scriptsEnabled).length,
     'Projects with script files updated': results.filter(r => r.scriptsUpdated).length,
     'Total script files copied': results.reduce((sum, r) => sum + r.scriptsCopied, 0),
     'Projects with package.json updated': results.filter(r => r.packageJsonUpdated).length,

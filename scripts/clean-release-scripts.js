@@ -46,29 +46,29 @@ function cleanReleaseScripts(projectPath, projectType) {
 
         // Remove scripts based on project type
         if (projectType === 'package') {
-            // For package type, remove bp:release:sandbox
-            if (packageJson.scripts['bp:release:sandbox']) {
-                delete packageJson.scripts['bp:release:sandbox'];
-                scriptsRemoved.push('bp:release:sandbox');
+            // For package type, remove bp:main:sandbox
+            if (packageJson.scripts['bp:main:sandbox']) {
+                delete packageJson.scripts['bp:main:sandbox'];
+                scriptsRemoved.push('bp:main:sandbox');
                 packageJsonUpdated = true;
             }
         } else if (projectType === 'app') {
-            // For app type, remove bp:release:package
-            if (packageJson.scripts['bp:release:package']) {
-                delete packageJson.scripts['bp:release:package'];
-                scriptsRemoved.push('bp:release:package');
+            // For app type, remove bp:main:package
+            if (packageJson.scripts['bp:main:package']) {
+                delete packageJson.scripts['bp:main:package'];
+                scriptsRemoved.push('bp:main:package');
                 packageJsonUpdated = true;
             }
         } else if (projectType === 'standalone') {
-            // For standalone or reference type, remove both bp:release:sandbox and bp:release:package
-            if (packageJson.scripts['bp:release:sandbox']) {
-                delete packageJson.scripts['bp:release:sandbox'];
-                scriptsRemoved.push('bp:release:sandbox');
+            // For standalone or reference type, remove both bp:main:sandbox and bp:main:package
+            if (packageJson.scripts['bp:main:sandbox']) {
+                delete packageJson.scripts['bp:main:sandbox'];
+                scriptsRemoved.push('bp:main:sandbox');
                 packageJsonUpdated = true;
             }
-            if (packageJson.scripts['bp:release:package']) {
-                delete packageJson.scripts['bp:release:package'];
-                scriptsRemoved.push('bp:release:package');
+            if (packageJson.scripts['bp:main:package']) {
+                delete packageJson.scripts['bp:main:package'];
+                scriptsRemoved.push('bp:main:package');
                 packageJsonUpdated = true;
             }
         }
