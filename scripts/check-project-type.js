@@ -5,11 +5,8 @@ const path = require('path');
 const { execSync } = require('child_process');
 const common = require('./common');
 
-// Load environment variables and get projects folders
-const projectsFolders = common.loadEnvironmentVariables();
-
-// Parse the comma-separated list of folders
-const foldersToSearch = common.parseFoldersToSearch(projectsFolders);
+// Get the script name
+const scriptName = path.basename(__filename, '.js');
 
 /**
  * Determines the project type based on git branches
@@ -71,6 +68,12 @@ function updateBpStatusWithType(bpStatusPath, projectType) {
     // Read existing bpstatus.json
     const bpStatus = common.readBpStatus(bpStatusPath);
 
+    // Check if the type has changed
+    if (bpStatus.type === projectType) {
+      console.log(`Project type unchanged (${projectType}), skipping bpstatus.json update`);
+      return false;
+    }
+
     // Add or update the type field
     bpStatus.type = projectType;
 
@@ -85,69 +88,44 @@ function updateBpStatusWithType(bpStatusPath, projectType) {
   }
 }
 
-// Find all projects with bpstatus.json
-const allProjects = common.findAllProjects(foldersToSearch);
+// Define the processor function
+function processProject(project, bpStatus) {
+  // Determine project type
+  const projectType = determineProjectType(project.projectPath);
 
-// Check project type for each project
-const results = [];
-for (const project of allProjects) {
-  // Read bpstatus.json to check for exclusions
-  const bpStatus = common.readBpStatus(project.bpStatusPath);
+  // Update bpstatus.json with project type
+  const typeUpdated = updateBpStatusWithType(project.bpStatusPath, projectType);
 
-  // Check if this script is excluded by the exclude rules
-  const scriptName = path.basename(__filename, '.js');
-  const isExcluded = common.isScriptExcluded(bpStatus, scriptName);
-
-  let projectType = '';
-  let bpStatusUpdated = false;
-
-  if (isExcluded) {
-    console.log(`${project.projectName}: Script ${scriptName} is excluded by bpstatus.json exclude rules, skipping...`);
-    projectType = bpStatus.type || 'unknown';
-  } else {
-    // Determine project type
-    projectType = determineProjectType(project.projectPath);
-
-    // Update bpstatus.json with project type
-    bpStatusUpdated = updateBpStatusWithType(project.bpStatusPath, projectType);
-  }
-
-  // Only update bpstatus.json if the script is not excluded
-  if (!isExcluded) {
-    common.updateBpStatus(project.bpStatusPath, 'check-project-type');
-  }
-
-  results.push({
-    ...project,
+  return {
     projectType,
-    isExcluded,
-    bpStatusUpdated
-  });
-
-  console.log(`${project.projectName}: project type = ${projectType}, excluded = ${isExcluded ? 'true' : 'false'}, bpstatus updated = ${bpStatusUpdated ? 'true' : 'false'}`);
+    typeUpdated
+  };
 }
 
-// Generate markdown report
-let markdown = common.generateMarkdownHeader('Projects Type Status');
-markdown += common.generateMarkdownTableHeader(['Project Name', 'Project Path', 'Project Type', 'Excluded', 'bpstatus.json Updated']);
-
-for (const result of results) {
-  markdown += `| ${result.projectName} | ${result.projectPath} | ${result.projectType} | ${result.isExcluded ? '✅' : '❌'} | ${result.bpStatusUpdated ? '✅' : '❌'} |\n`;
+// Define the row generator function
+function generateRow(result) {
+  return `| ${result.projectName} | ${result.projectPath} | ${result.projectType} | ${result.isExcluded ? '✅' : '❌'} | ${result.bpStatusUpdated ? '✅' : '❌'} |\n`;
 }
 
-// Add summary
-const summaryData = {
-  'Total projects found': results.length,
-  'Projects excluded by rules': results.filter(r => r.isExcluded).length,
-  'App projects': results.filter(r => r.projectType === 'app').length,
-  'Package projects': results.filter(r => r.projectType === 'package').length,
-  'Standalone projects': results.filter(r => r.projectType === 'standalone').length,
-  'Projects with bpstatus.json updated': results.filter(r => r.bpStatusUpdated).length
-};
-markdown += common.generateMarkdownSummary(summaryData);
+// Define the summary generator function
+function generateSummary(results) {
+  return {
+    'Total projects found': results.length,
+    'Projects excluded by rules': results.filter(r => r.isExcluded).length,
+    'App projects': results.filter(r => r.projectType === 'app').length,
+    'Package projects': results.filter(r => r.projectType === 'package').length,
+    'Standalone projects': results.filter(r => r.projectType === 'standalone').length,
+    'Projects with bpstatus.json updated': results.filter(r => r.bpStatusUpdated).length
+  };
+}
 
-// Write to STATUS_PROJECT_TYPES.gitignored.md
-const outputPath = path.resolve(__dirname, '../STATUS_PROJECT_TYPES.gitignored.md');
-common.writeMarkdownReport(outputPath, markdown);
-
-console.log(`Checked project types for ${results.length} projects`);
+// Process all projects
+common.processProjects(
+  scriptName,
+  processProject,
+  'Projects Type Status',
+  ['Project Name', 'Project Path', 'Project Type', 'Excluded', 'bpstatus.json Updated'],
+  generateRow,
+  generateSummary,
+  path.resolve(__dirname, '../STATUS_PROJECT_TYPES.gitignored.md')
+);

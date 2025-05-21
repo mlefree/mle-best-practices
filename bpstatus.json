@@ -1,16 +1,14 @@
 {
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "reference",
   "exclude": [
     "check-project-type",
-    "clean-release-scripts"
+    "check-scripts"
   ],
   "status": {
-    "find-projects": "2025-05-20 22:34",
-    "check-gitignore": "2025-05-20 22:34",
-    "check-memory-bank": "2025-05-20 22:34",
-    "check-scripts": "2025-05-20 22:34",
-    "check-project-type": "2025-05-20 14:53",
-    "clean-release-scripts": "2025-05-20 14:53"
+    "find-projects": "2025-05-21 10:47",
+    "check-gitignore": "2025-05-21 10:47",
+    "check-memory-bank": "2025-05-21 10:47",
+    "check-scripts": "2025-05-21 11:02"
   }
 }

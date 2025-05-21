@@ -4,8 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const common = require('./common');
 
-// Load environment variables and get projects folders
-const projectsFolders = common.loadEnvironmentVariables();
+// Get the script name
+const scriptName = path.basename(__filename, '.js');
 
 // Read the reference .gitignore file from this project
 const referenceGitignorePath = path.resolve(__dirname, '../.gitignore');
@@ -24,9 +24,6 @@ try {
     console.error(`Error reading reference .gitignore file: ${error.message}`);
     process.exit(1);
 }
-
-// Parse the comma-separated list of folders
-const foldersToSearch = common.parseFoldersToSearch(projectsFolders);
 
 // Function to check if a project's .gitignore matches the reference
 function checkGitignore(projectPath) {
@@ -56,8 +53,6 @@ function checkGitignore(projectPath) {
         return false;
     }
 }
-
-// Function to update a project's bpstatus.json file is now in common.js
 
 // Function to update a project's .gitignore file with reference lines
 function updateGitignore(projectPath) {
@@ -110,67 +105,41 @@ function updateGitignore(projectPath) {
     }
 }
 
-// Find all projects with bpstatus.json
-const allProjects = common.findAllProjects(foldersToSearch);
+// Define the processor function
+function processProject(project, bpStatus) {
+    const gitignoreStatus = checkGitignore(project.projectPath);
+    const gitignoreUpdated = updateGitignore(project.projectPath);
 
-// Check .gitignore for each project and update bpstatus.json
-const results = [];
-for (const project of allProjects) {
-    // Check if project has .gitignore in bpstatus.json status
-    const bpStatus = common.readBpStatus(project.bpStatusPath);
-
-    // Check if this script is excluded by the exclude rules
-    const scriptName = path.basename(__filename, '.js');
-    const isExcluded = common.isScriptExcluded(bpStatus, scriptName);
-
-    let gitignoreStatus = false;
-    let gitignoreUpdated = false;
-    let bpStatusUpdated = false;
-
-    if (isExcluded) {
-        console.log(`${project.projectName}: Script ${scriptName} is excluded by bpstatus.json exclude rules, skipping...`);
-    } else {
-        gitignoreStatus = checkGitignore(project.projectPath);
-        gitignoreUpdated = updateGitignore(project.projectPath);
-    }
-
-    // Only update bpstatus.json if the script is not excluded
-    if (!isExcluded) {
-        bpStatusUpdated = common.updateBpStatus(project.bpStatusPath, 'check-gitignore');
-    }
-
-    results.push({
-        ...project,
+    return {
         gitignoreStatus,
-        isExcluded,
-        gitignoreUpdated,
-        bpStatusUpdated
-    });
-
-    console.log(`${project.projectName}: .gitignore status = ${gitignoreStatus ? 'true' : 'false'}, excluded = ${isExcluded ? 'true' : 'false'}, updated = ${gitignoreUpdated ? 'true' : 'false'}, bpstatus updated = ${bpStatusUpdated ? 'true' : 'false'}`);
+        gitignoreUpdated
+    };
 }
 
-// Generate markdown report
-let markdown = common.generateMarkdownHeader('Projects .gitignore Status');
-markdown += common.generateMarkdownTableHeader(['Project Name', 'Project Path', '.gitignore Status', 'Excluded', '.gitignore Updated', 'bpstatus.json Updated']);
-
-for (const result of results) {
-    markdown += `| ${result.projectName} | ${result.projectPath} | ${result.gitignoreStatus ? '✅' : '❌'} | ${result.isExcluded ? '✅' : '❌'} | ${result.gitignoreUpdated ? '✅' : '❌'} | ${result.bpStatusUpdated ? '✅' : '❌'} |\n`;
+// Define the row generator function
+function generateRow(result) {
+    return `| ${result.projectName} | ${result.projectPath} | ${result.gitignoreStatus ? '✅' : '❌'} | ${result.isExcluded ? '✅' : '❌'} | ${result.gitignoreUpdated ? '✅' : '❌'} | ${result.bpStatusUpdated ? '✅' : '❌'} |\n`;
 }
 
-// Add summary
-const summaryData = {
-    'Total projects found': results.length,
-    'Projects excluded by rules': results.filter(r => r.isExcluded).length,
-    'Projects with matching .gitignore': results.filter(r => r.gitignoreStatus).length,
-    'Projects with non-matching .gitignore': results.filter(r => !r.gitignoreStatus && !r.isExcluded).length,
-    'Projects with .gitignore updated': results.filter(r => r.gitignoreUpdated).length,
-    'Projects with bpstatus.json updated': results.filter(r => r.bpStatusUpdated).length
-};
-markdown += common.generateMarkdownSummary(summaryData);
+// Define the summary generator function
+function generateSummary(results) {
+    return {
+        'Total projects found': results.length,
+        'Projects excluded by rules': results.filter(r => r.isExcluded).length,
+        'Projects with matching .gitignore': results.filter(r => r.gitignoreStatus).length,
+        'Projects with non-matching .gitignore': results.filter(r => !r.gitignoreStatus && !r.isExcluded).length,
+        'Projects with .gitignore updated': results.filter(r => r.gitignoreUpdated).length,
+        'Projects with bpstatus.json updated': results.filter(r => r.bpStatusUpdated).length
+    };
+}
 
-// Write to STATUS_GITIGNORE.gitignored.md
-const outputPath = path.resolve(__dirname, '../STATUS_GITIGNORE.gitignored.md');
-common.writeMarkdownReport(outputPath, markdown);
-
-console.log(`Checked .gitignore for ${results.length} projects`);
+// Process all projects
+common.processProjects(
+    scriptName,
+    processProject,
+    'Projects .gitignore Status',
+    ['Project Name', 'Project Path', '.gitignore Status', 'Excluded', '.gitignore Updated', 'bpstatus.json Updated'],
+    generateRow,
+    generateSummary,
+    path.resolve(__dirname, '../STATUS_GITIGNORE.gitignored.md')
+);

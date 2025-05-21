@@ -4,7 +4,7 @@
 
 ![MLE Best Practices Logo](https://img.shields.io/badge/MLE-Best%20Practices-blue?style=for-the-badge)
 
-[![Version](https://img.shields.io/badge/version-0.0.3-blue.svg)](https://github.com/mlefree/mle-best-practices)
+[![Version](https://img.shields.io/badge/version-0.0.5-blue.svg)](https://github.com/mlefree/mle-best-practices)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D22.x-brightgreen.svg)](https://nodejs.org)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
@@ -77,7 +77,7 @@ PROJECTS_FOLDERS=/path/to/projects1,/path/to/projects2
 To run all best practices checks:
 
 ```bash
-npm run all
+npm run DO-All
 ```
 
 ### Viewing Reports

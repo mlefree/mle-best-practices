@@ -9,7 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Version bump
+- Updated scripts for better compliance checking
+- Improved project type detection
+- Enhanced release scripts management
+- Updated common utility functions
+
+## [0.0.4] - 2025-05-20
+
+### Changed
+
+- Updated documentation
+- Improved script functionality
+- Enhanced configuration management
 
 ## [0.0.3] - 2025-05-20
 

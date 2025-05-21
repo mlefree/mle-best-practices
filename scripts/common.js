@@ -306,6 +306,130 @@ function isScriptExcluded(bpStatus, scriptName) {
   });
 }
 
+/**
+ * Reads and parses a project's package.json file
+ * @param {string} projectPath - The path to the project
+ * @returns {Object|null} The parsed package.json content or null if an error occurs
+ */
+function readPackageJson(projectPath) {
+  const packageJsonPath = path.join(projectPath, 'package.json');
+
+  try {
+    // Check if package.json exists
+    if (!fs.existsSync(packageJsonPath)) {
+      console.log(`No package.json found in ${path.basename(projectPath)}`);
+      return null;
+    }
+
+    // Read and parse package.json
+    const packageJsonContent = fs.readFileSync(packageJsonPath, 'utf8');
+    return JSON.parse(packageJsonContent);
+  } catch (error) {
+    console.error(`Error reading package.json for ${projectPath}: ${error.message}`);
+    return null;
+  }
+}
+
+/**
+ * Writes a package.json object to a file
+ * @param {string} projectPath - The path to the project
+ * @param {Object} packageJson - The package.json object to write
+ * @returns {boolean} True if the write was successful, false otherwise
+ */
+function writePackageJson(projectPath, packageJson) {
+  const packageJsonPath = path.join(projectPath, 'package.json');
+
+  try {
+    fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
+    return true;
+  } catch (error) {
+    console.error(`Error writing package.json for ${projectPath}: ${error.message}`);
+    return false;
+  }
+}
+
+/**
+ * Processes all projects with a given processor function and generates a markdown report
+ * @param {string} scriptName - The name of the script (without path or extension)
+ * @param {Function} processorFn - The function to process each project
+ * @param {string} reportTitle - The title for the markdown report
+ * @param {string[]} tableColumns - The column names for the markdown table
+ * @param {Function} rowGeneratorFn - The function to generate a table row for each result
+ * @param {Function} summaryGeneratorFn - The function to generate summary data
+ * @param {string} outputPath - The path to write the markdown report to
+ */
+function processProjects(scriptName, processorFn, reportTitle, tableColumns, rowGeneratorFn, summaryGeneratorFn, outputPath) {
+  // Load environment variables and get projects folders
+  const projectsFolders = loadEnvironmentVariables();
+
+  // Parse the comma-separated list of folders
+  const foldersToSearch = parseFoldersToSearch(projectsFolders);
+
+  // Find all projects with bpstatus.json
+  const allProjects = findAllProjects(foldersToSearch);
+
+  // Process each project
+  const results = [];
+  for (const project of allProjects) {
+    // Read bpStatus
+    const bpStatus = readBpStatus(project.bpStatusPath);
+
+    // Check if this script is excluded by the exclude rules
+    const isExcluded = isScriptExcluded(bpStatus, scriptName);
+
+    let result = {
+      ...project,
+      isExcluded
+    };
+
+    if (isExcluded) {
+      console.log(`${project.projectName}: Script ${scriptName} is excluded by bpstatus.json exclude rules, skipping...`);
+    } else {
+      // Process the project
+      const processorResult = processorFn(project, bpStatus);
+      result = {
+        ...result,
+        ...processorResult
+      };
+
+      // Check if any changes were made by the processor function
+      const changesWereMade = Object.keys(processorResult).some(key =>
+        key.endsWith('Updated') && processorResult[key] === true
+      );
+
+      // Update bpstatus.json only if changes were made
+      if (changesWereMade) {
+        result.bpStatusUpdated = updateBpStatus(project.bpStatusPath, scriptName);
+      } else {
+        console.log(`${project.projectName}: No changes made, skipping bpstatus.json update`);
+        result.bpStatusUpdated = false;
+      }
+    }
+
+    results.push(result);
+  }
+
+  // Generate markdown report
+  let markdown = generateMarkdownHeader(reportTitle);
+  markdown += generateMarkdownTableHeader(tableColumns);
+
+  // Add rows for each result
+  for (const result of results) {
+    markdown += rowGeneratorFn(result);
+  }
+
+  // Add summary
+  const summaryData = summaryGeneratorFn(results);
+  markdown += generateMarkdownSummary(summaryData);
+
+  // Write markdown report to file
+  writeMarkdownReport(outputPath, markdown);
+
+  console.log(`Processed ${results.length} projects with ${scriptName}`);
+
+  return results;
+}
+
 module.exports = {
   loadEnvironmentVariables,
   parseFoldersToSearch,
@@ -319,5 +443,8 @@ module.exports = {
   formatDate,
   updateBpStatus,
   copyFile,
-  isScriptExcluded
+  isScriptExcluded,
+  readPackageJson,
+  writePackageJson,
+  processProjects
 };

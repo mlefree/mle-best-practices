@@ -4,8 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const common = require('./common');
 
-// Load environment variables and get projects folders
-const projectsFolders = common.loadEnvironmentVariables();
+// Get the script name
+const scriptName = path.basename(__filename, '.js');
 
 // Get the source BP scripts directory
 const bpScriptsDir = path.resolve(__dirname, 'bp');
@@ -48,9 +48,6 @@ try {
     process.exit(1);
 }
 
-// Parse the comma-separated list of folders
-const foldersToSearch = common.parseFoldersToSearch(projectsFolders);
-
 // Function to update a project's bpstatus.json file is now in common.js
 
 // Function to update a project's package.json with bp:** scripts
@@ -78,21 +75,35 @@ function updatePackageJsonScripts(projectPath) {
             packageJson.scripts = {};
         }
 
-        // Remove old existing bp:* scripts
+        // Check if any bp:* scripts need to be updated
+        let scriptsChanged = false;
+
+        // Check if any existing bp:* scripts are different from the ones we want to add
         Object.keys(packageJson.scripts).forEach(key => {
             if (key.startsWith('bp:')) {
-                delete packageJson.scripts[key];
-                packageJsonUpdated = true;
-                console.log(`Removed old ${key} script from ${path.basename(projectPath)}/package.json`);
+                if (bpScripts[key] !== packageJson.scripts[key]) {
+                    delete packageJson.scripts[key];
+                    scriptsChanged = true;
+                    packageJsonUpdated = true;
+                    console.log(`Removed old ${key} script from ${path.basename(projectPath)}/package.json`);
+                }
             }
         });
 
-        // Add all bp:** scripts
+        // Add any missing bp:** scripts
         for (const [key, value] of Object.entries(bpScripts)) {
-            packageJson.scripts[key] = value;
-            scriptsAdded++;
-            packageJsonUpdated = true;
-            console.log(`Added ${key} script to ${path.basename(projectPath)}/package.json`);
+            if (!packageJson.scripts[key] || packageJson.scripts[key] !== value) {
+                packageJson.scripts[key] = value;
+                scriptsAdded++;
+                scriptsChanged = true;
+                packageJsonUpdated = true;
+                console.log(`Added ${key} script to ${path.basename(projectPath)}/package.json`);
+            }
+        }
+
+        // If no scripts were changed, log it
+        if (!scriptsChanged) {
+            console.log(`No changes needed for bp:* scripts in ${path.basename(projectPath)}/package.json`);
         }
 
         // Reorder scripts to move bp:* scripts to the top
@@ -119,10 +130,11 @@ function updatePackageJsonScripts(projectPath) {
             });
 
             packageJson.scripts = orderedScripts;
-            packageJsonUpdated = true;
+            // Reordering scripts doesn't count as a change that requires bpstatus.json update
         }
 
         // Reorder package.json sections to ensure correct order: 1) scripts, 2) dependencies, 3) devDependencies
+        // but don't count this as a change that requires bpstatus.json update
         const newPackageJson = {};
 
         // Add all properties except scripts, dependencies, and devDependencies
@@ -155,7 +167,7 @@ function updatePackageJsonScripts(projectPath) {
             packageJson[key] = value;
         });
 
-        packageJsonUpdated = true;
+        // packageJsonUpdated is already set based on actual changes
 
         // Write updated package.json if changes were made
         if (packageJsonUpdated) {
@@ -217,79 +229,145 @@ function copyBpScripts(projectPath) {
     }
 }
 
-// Find all projects with bpstatus.json
-const allProjects = common.findAllProjects(foldersToSearch);
-
-// Check scripts for each project
-const results = [];
-for (const project of allProjects) {
-    // Check if project has scripts in bpstatus.json status
-    const bpStatus = common.readBpStatus(project.bpStatusPath);
-    let scriptsUpdated = false;
-    let scriptsCopied = 0;
+/**
+ * Removes specific release scripts from package.json based on project type
+ * @param {string} projectPath - The path to the project
+ * @param {string} projectType - The project type: "app", "package", or "standalone"
+ * @returns {Object} Object containing information about the update
+ */
+function cleanReleaseScripts(projectPath, projectType) {
+    let scriptsRemoved = [];
     let packageJsonUpdated = false;
-    let scriptsAdded = 0;
-    let bpStatusUpdated = false;
-    let isExcluded = false;
 
-    // Check if this script is excluded by the exclude rules
-    const scriptName = path.basename(__filename, '.js');
-    isExcluded = common.isScriptExcluded(bpStatus, scriptName);
+    // Read the project's package.json
+    const packageJson = common.readPackageJson(projectPath);
+    if (!packageJson) {
+        return {
+            scriptsRemoved,
+            packageJsonUpdated
+        };
+    }
 
-    if (isExcluded) {
-        console.log(`${project.projectName}: Script ${scriptName} is excluded by bpstatus.json exclude rules, skipping...`);
+    // Check if scripts object exists
+    if (!packageJson.scripts) {
+        console.log(`No scripts found in ${path.basename(projectPath)}/package.json`);
+        return {
+            scriptsRemoved,
+            packageJsonUpdated
+        };
+    }
+
+    // Check if project has any package.*.json files
+    const hasPackageVariants = fs.readdirSync(projectPath)
+        .some(file => file.match(/^package\.[^.]+\.json$/));
+
+    // If no package.*.json files found, remove bp:use-*-deps scripts
+    if (!hasPackageVariants) {
+        Object.keys(packageJson.scripts).forEach(scriptName => {
+            if (scriptName.match(/^bp:use-.*-deps$/)) {
+                delete packageJson.scripts[scriptName];
+                scriptsRemoved.push(scriptName);
+                packageJsonUpdated = true;
+            }
+        });
+    }
+
+    // Remove scripts based on project type
+    if (projectType === 'package') {
+        // For package type, remove bp:main:sandbox
+        if (packageJson.scripts['bp:main:sandbox']) {
+            delete packageJson.scripts['bp:main:sandbox'];
+            scriptsRemoved.push('bp:main:sandbox');
+            packageJsonUpdated = true;
+        }
+    } else if (projectType === 'app') {
+        // For app type, remove bp:main:package
+        if (packageJson.scripts['bp:main:package']) {
+            delete packageJson.scripts['bp:main:package'];
+            scriptsRemoved.push('bp:main:package');
+            packageJsonUpdated = true;
+        }
+    } else if (projectType === 'standalone') {
+        // For standalone or reference type, remove both bp:main:sandbox and bp:main:package
+        if (packageJson.scripts['bp:main:sandbox']) {
+            delete packageJson.scripts['bp:main:sandbox'];
+            scriptsRemoved.push('bp:main:sandbox');
+            packageJsonUpdated = true;
+        }
+        if (packageJson.scripts['bp:main:package']) {
+            delete packageJson.scripts['bp:main:package'];
+            scriptsRemoved.push('bp:main:package');
+            packageJsonUpdated = true;
+        }
+    }
+
+    // Write updated package.json if changes were made
+    if (packageJsonUpdated) {
+        common.writePackageJson(projectPath, packageJson);
+        console.log(`Updated package.json for ${path.basename(projectPath)}, removed scripts: ${scriptsRemoved.join(', ')}`);
     } else {
-        // Copy BP script files
-        const copyResult = copyBpScripts(project.projectPath);
-        scriptsUpdated = copyResult.scriptsUpdated;
-        scriptsCopied = copyResult.scriptsCopied;
-
-        // Update package.json with bp:** scripts
-        const updateResult = updatePackageJsonScripts(project.projectPath);
-        packageJsonUpdated = updateResult.packageJsonUpdated;
-        scriptsAdded = updateResult.scriptsAdded;
+        console.log(`No scripts needed to be removed from ${path.basename(projectPath)}/package.json`);
     }
 
-    // Only update bpstatus.json if the script is not excluded
-    if (!isExcluded) {
-        bpStatusUpdated = common.updateBpStatus(project.bpStatusPath, 'check-scripts');
-    }
+    return {
+        scriptsRemoved,
+        packageJsonUpdated
+    };
+}
 
-    results.push({
-        ...project,
-        isExcluded,
+// Define the processor function
+function processProject(project, bpStatus) {
+    // Copy BP script files
+    const copyResult = copyBpScripts(project.projectPath);
+    const scriptsUpdated = copyResult.scriptsUpdated;
+    const scriptsCopied = copyResult.scriptsCopied;
+
+    // Update package.json with bp:** scripts
+    const updateResult = updatePackageJsonScripts(project.projectPath);
+    const scriptsAdded = updateResult.scriptsAdded;
+
+    // Clean useless scripts based on project type
+    const projectType = bpStatus.type || 'standalone';
+    const cleanResult = cleanReleaseScripts(project.projectPath, projectType);
+    const scriptsRemoved = cleanResult.scriptsRemoved;
+
+    let finalPackageJsonUpdated = scriptsAdded - scriptsRemoved;
+
+    return {
         scriptsUpdated,
         scriptsCopied,
-        packageJsonUpdated,
+        packageJsonUpdated: finalPackageJsonUpdated,
         scriptsAdded,
-        bpStatusUpdated
-    });
-
-    console.log(`${project.projectName}: scripts enabled = ${bpStatus.status && !!bpStatus.status['scripts'] ? 'true' : 'false'}, files updated = ${scriptsUpdated ? 'true' : 'false'}, files copied = ${scriptsCopied}, package.json updated = ${packageJsonUpdated ? 'true' : 'false'}, scripts added = ${scriptsAdded}, bpstatus updated = ${bpStatusUpdated ? 'true' : 'false'}`);
+        scriptsRemoved
+    };
 }
 
-// Generate markdown report
-let markdown = common.generateMarkdownHeader('Projects Scripts Status');
-markdown += common.generateMarkdownTableHeader(['Project Name', 'Project Path', 'Excluded', 'Script Files Updated', 'Script Files Copied', 'Package.json Updated', 'BP Scripts Added', 'bpstatus.json Updated']);
-
-for (const result of results) {
-    markdown += `| ${result.projectName} | ${result.projectPath} | ${result.isExcluded ? '✅' : '❌'} | ${result.scriptsUpdated ? '✅' : '❌'} | ${result.scriptsCopied} | ${result.packageJsonUpdated ? '✅' : '❌'} | ${result.scriptsAdded} | ${result.bpStatusUpdated ? '✅' : '❌'} |\n`;
+// Define the row generator function
+function generateRow(result) {
+    return `| ${result.projectName} | ${result.projectPath} | ${result.isExcluded ? '✅' : '❌'} | ${result.scriptsUpdated ? '✅' : '❌'} | ${result.scriptsCopied} | ${result.packageJsonUpdated ? '✅' : '❌'} | ${result.scriptsAdded} | ${result.bpStatusUpdated ? '✅' : '❌'} |\n`;
 }
 
-// Add summary
-const summaryData = {
-    'Total projects found': results.length,
-    'Projects excluded by rules': results.filter(r => r.isExcluded).length,
-    'Projects with script files updated': results.filter(r => r.scriptsUpdated).length,
-    'Total script files copied': results.reduce((sum, r) => sum + r.scriptsCopied, 0),
-    'Projects with package.json updated': results.filter(r => r.packageJsonUpdated).length,
-    'Total BP scripts added to package.json': results.reduce((sum, r) => sum + r.scriptsAdded, 0),
-    'Projects with bpstatus.json updated': results.filter(r => r.bpStatusUpdated).length
-};
-markdown += common.generateMarkdownSummary(summaryData);
+// Define the summary generator function
+function generateSummary(results) {
+    return {
+        'Total projects found': results.length,
+        'Projects excluded by rules': results.filter(r => r.isExcluded).length,
+        'Projects with script files updated': results.filter(r => r.scriptsUpdated).length,
+        'Total script files copied': results.reduce((sum, r) => sum + r.scriptsCopied, 0),
+        'Projects with package.json updated': results.filter(r => r.packageJsonUpdated).length,
+        'Total BP scripts added to package.json': results.reduce((sum, r) => sum + r.scriptsAdded, 0),
+        'Total BP scripts removed from package.json': results.reduce((sum, r) => sum + (r.scriptsRemoved ? r.scriptsRemoved.length : 0), 0),
+        'Projects with bpstatus.json updated': results.filter(r => r.bpStatusUpdated).length
+    };
+}
 
-// Write to STATUS_SCRIPTS.gitignored.md
-const outputPath = path.resolve(__dirname, '../STATUS_SCRIPTS.gitignored.md');
-common.writeMarkdownReport(outputPath, markdown);
-
-console.log(`Checked scripts for ${results.length} projects`);
+// Process all projects
+common.processProjects(
+    scriptName,
+    processProject,
+    'Projects Scripts Status',
+    ['Project Name', 'Project Path', 'Excluded', 'Script Files Updated', 'Script Files Copied', 'Package.json Updated', 'BP Scripts Added', 'bpstatus.json Updated'],
+    generateRow,
+    generateSummary,
+    path.resolve(__dirname, '../STATUS_SCRIPTS.gitignored.md')
+);
