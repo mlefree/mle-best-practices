@@ -66,5 +66,6 @@ common.processProjects(
     ['Project Name', 'Project Path', 'Memory Bank Enabled', 'Excluded', 'Rules Updated', 'bpstatus.json Updated'],
     generateRow,
     generateSummary,
-    path.resolve(__dirname, '../STATUS_MEMORY_BANK.gitignored.md')
+    path.resolve(__dirname, '../STATUS_MEMORY_BANK.gitignored.md'),
+    true // Skip generating the report
 );

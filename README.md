@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![MLE Best Practices Logo](https://img.shields.io/badge/MLE-Best%20Practices-blue?style=for-the-badge)
+![MLE Best Practices Logo](https://img.shields.io/badge/MLE-Best-Practices-blue?style=for-the-badge)
 
 [![Version](https://img.shields.io/badge/version-0.0.5-blue.svg)](https://github.com/mlefree/mle-best-practices)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
@@ -74,7 +74,7 @@ PROJECTS_FOLDERS=/path/to/projects1,/path/to/projects2
 
 ### Running All Checks
 
-To run all best practices checks:
+To run all best-practice checks:
 
 ```bash
 npm run DO-All
@@ -82,14 +82,9 @@ npm run DO-All
 
 ### Viewing Reports
 
-After running the checks, you can view the generated reports in the following files:
+After running the checks, you can view the generated comprehensive report in the following file:
 
-- `STATUS_PROJECTS.gitignored.md`: List of all projects with bpstatus.json
-- `STATUS_GITIGNORE.gitignored.md`: Report on .gitignore compliance
-- `STATUS_MEMORY_BANK.gitignored.md`: Report on memory bank implementation
-- `STATUS_SCRIPTS.gitignored.md`: Report on scripts implementation
-- `STATUS_PROJECT_TYPES.gitignored.md`: Report on project types
-- `STATUS_RELEASE_SCRIPTS.gitignored.md`: Report on release scripts cleanup
+- `STATUS_ALL.gitignored.md`: Consolidated report containing all projects status information
 
 ## 📚 Documentation
 

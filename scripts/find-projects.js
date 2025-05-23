@@ -32,5 +32,6 @@ common.processProjects(
   ['Project Name', 'Project Path'],
   generateRow,
   generateSummary,
-  path.resolve(__dirname, '../STATUS_PROJECTS.gitignored.md')
+  path.resolve(__dirname, '../STATUS_PROJECTS.gitignored.md'),
+  true // Skip generating the report
 );

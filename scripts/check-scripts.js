@@ -369,5 +369,6 @@ common.processProjects(
     ['Project Name', 'Project Path', 'Excluded', 'Script Files Updated', 'Script Files Copied', 'Package.json Updated', 'BP Scripts Added', 'bpstatus.json Updated'],
     generateRow,
     generateSummary,
-    path.resolve(__dirname, '../STATUS_SCRIPTS.gitignored.md')
+    path.resolve(__dirname, '../STATUS_SCRIPTS.gitignored.md'),
+    true // Skip generating the report
 );

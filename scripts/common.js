@@ -357,8 +357,9 @@ function writePackageJson(projectPath, packageJson) {
  * @param {Function} rowGeneratorFn - The function to generate a table row for each result
  * @param {Function} summaryGeneratorFn - The function to generate summary data
  * @param {string} outputPath - The path to write the markdown report to
+ * @param {boolean} [skipReport=false] - Whether to skip generating the markdown report
  */
-function processProjects(scriptName, processorFn, reportTitle, tableColumns, rowGeneratorFn, summaryGeneratorFn, outputPath) {
+function processProjects(scriptName, processorFn, reportTitle, tableColumns, rowGeneratorFn, summaryGeneratorFn, outputPath, skipReport = false) {
     // Load environment variables and get projects folders
     const projectsFolders = loadEnvironmentVariables();
 
@@ -431,21 +432,23 @@ function processProjects(scriptName, processorFn, reportTitle, tableColumns, row
         return a.projectName.localeCompare(b.projectName);
     });
 
-    // Generate markdown report
-    let markdown = generateMarkdownHeader(reportTitle);
-    markdown += generateMarkdownTableHeader(tableColumns);
+    // Generate markdown report if not skipped
+    if (!skipReport) {
+        let markdown = generateMarkdownHeader(reportTitle);
+        markdown += generateMarkdownTableHeader(tableColumns);
 
-    // Add rows for each result
-    for (const result of results) {
-        markdown += rowGeneratorFn(result);
+        // Add rows for each result
+        for (const result of results) {
+            markdown += rowGeneratorFn(result);
+        }
+
+        // Add summary
+        const summaryData = summaryGeneratorFn(results);
+        markdown += generateMarkdownSummary(summaryData);
+
+        // Write markdown report to file
+        writeMarkdownReport(outputPath, markdown);
     }
-
-    // Add summary
-    const summaryData = summaryGeneratorFn(results);
-    markdown += generateMarkdownSummary(summaryData);
-
-    // Write markdown report to file
-    writeMarkdownReport(outputPath, markdown);
 
     console.log(`Processed ${results.length} projects with ${scriptName}`);
 

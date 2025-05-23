@@ -141,5 +141,6 @@ common.processProjects(
     ['Project Name', 'Project Path', '.gitignore Status', 'Excluded', '.gitignore Updated', 'bpstatus.json Updated'],
     generateRow,
     generateSummary,
-    path.resolve(__dirname, '../STATUS_GITIGNORE.gitignored.md')
+    path.resolve(__dirname, '../STATUS_GITIGNORE.gitignored.md'),
+    true // Skip generating the report
 );
