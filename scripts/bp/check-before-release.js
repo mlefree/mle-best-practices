@@ -6,10 +6,13 @@
  *
  * Usage: node check-before-release.js
  *
- * This script first checks if all commits in the current branch compared to main/master
+ * This script first checks if there are any uncommitted changes in the working directory.
+ * If uncommitted changes are found, it exits with code 1.
+ *
+ * Then it checks if all commits in the current branch compared to main/master
  * only concern *.md and *.json files. If so, it exits with code 1 (not interesting to merge).
  *
- * Then it runs 'npm run build' and 'npm run test' commands.
+ * Finally, it runs 'npm run build' and 'npm run test' commands.
  * If both commands succeed, it exits with code 0.
  * If either command fails, it exits with code 1.
  */
@@ -33,8 +36,33 @@ function execCommand(command, silent = false) {
     }
 }
 
-// Function to check if all changes are only in *.md and *.json files
-function checkIfOnlyMdAndJsonFilesChanged() {
+// Function to check if there are uncommitted changes
+function checkForUncommittedChanges() {
+    try {
+        console.log('Checking for uncommitted changes...');
+
+        // Check for unstaged changes
+        const unstagedResult = execCommand('git diff --quiet', true);
+
+        // Check for staged but uncommitted changes
+        const stagedResult = execCommand('git diff --quiet --cached', true);
+
+        if (!unstagedResult.success || !stagedResult.success) {
+            console.log('\n⚠️ There are uncommitted changes in your working directory.');
+            console.log('Please commit or stash your changes before running pre-release checks.');
+            return true;
+        }
+
+        console.log('No uncommitted changes found. Proceeding with checks...');
+        return false;
+    } catch (error) {
+        console.error('Error checking for uncommitted changes:', error.message);
+        return true; // Fail safe - if we can't check, assume there are uncommitted changes
+    }
+}
+
+// Function to check if all changes are only in interesting files
+function checkIfOnlyInterestingFilesChanged() {
     try {
         // Get the current branch name
         const currentBranchResult = execCommand('git rev-parse --abbrev-ref HEAD', true);
@@ -80,9 +108,9 @@ function checkIfOnlyMdAndJsonFilesChanged() {
             return false;
         }
 
-        // Check if all changed files are *.md or *.json files
+        // Check if all changed files are *.md, *.json files, bpInfo or in scripts/bp directory
         const onlyInterestingFiles = changedFiles.every(file => {
-            return file.endsWith('.md') || file.endsWith('.json') || file.endsWith('bpInfo.ts');
+            return file.endsWith('.md') || file.endsWith('.json') || file.endsWith('bpInfo.ts') || file.startsWith('scripts/bp/');
         });
 
         if (onlyInterestingFiles) {
@@ -104,8 +132,14 @@ function checkIfOnlyMdAndJsonFilesChanged() {
 async function checkBeforeRelease() {
     console.log('Running pre-release checks...');
 
-    // Check if all changes are only in *.md and *.json files
-    if (checkIfOnlyMdAndJsonFilesChanged()) {
+    // Check for uncommitted changes
+    if (checkForUncommittedChanges()) {
+        console.log('Exiting with code 1 (uncommitted changes found).');
+        process.exit(1);
+    }
+
+    // Check if all changes are only in interesting files
+    if (checkIfOnlyInterestingFilesChanged()) {
         console.log('Exiting with code 1 (not interesting to merge).');
         process.exit(1);
     }

@@ -106,7 +106,7 @@ function updatePackageJsonScripts(projectPath) {
             console.log(`No changes needed for bp:* scripts in ${path.basename(projectPath)}/package.json`);
         }
 
-        // Reorder scripts to move bp:* scripts to the top
+        // Reorder scripts to move bp:* scripts to the top while maintaining their original order
         if (packageJson.scripts) {
             const bpScriptEntries = [];
             const otherScriptEntries = [];
@@ -120,11 +120,24 @@ function updatePackageJsonScripts(projectPath) {
                 }
             });
 
-            // Create a new scripts object with bp:* scripts at the top
+            // Create a new scripts object with bp:* scripts at the top in the same order as sourcePackageJson
             const orderedScripts = {};
-            bpScriptEntries.forEach(([key, value]) => {
-                orderedScripts[key] = value;
+
+            // Add bp:* scripts in the same order as they appear in the source package.json
+            Object.keys(bpScripts).forEach(key => {
+                if (packageJson.scripts[key]) {
+                    orderedScripts[key] = packageJson.scripts[key];
+                }
             });
+
+            // Add any remaining bp:* scripts that might not be in the source but are in the project
+            bpScriptEntries.forEach(([key, value]) => {
+                if (!orderedScripts[key]) {
+                    orderedScripts[key] = value;
+                }
+            });
+
+            // Add all other scripts
             otherScriptEntries.forEach(([key, value]) => {
                 orderedScripts[key] = value;
             });
