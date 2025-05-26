@@ -9,7 +9,14 @@ The current focus is on implementing and improving the project discovery and bes
 5. Updating documentation to reflect the new functionality
 
 ## Recent Changes
-1. Created a new script `find-projects.js` that:
+1. Updated project version to 0.0.10:
+   - Updated version in package.json
+   - Updated version in bpstatus.json
+   - Updated version badge in README.md
+   - Updated version in progress.md
+   - Updated CHANGELOG.md with new version entry
+
+2. Created a new script `find-projects.js` that:
    - Reads project directories from the PROJECTS_FOLDERS environment variable
    - Recursively searches for projects with bpstatus.json files
    - Generates a markdown table with the results

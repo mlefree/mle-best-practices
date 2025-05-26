@@ -36,7 +36,7 @@
    - Create a notification system for compliance changes
 
 ## Current Status
-- **Version**: 0.0.3 (Development in progress)
+- **Version**: 0.0.10 (Development in progress)
 - **Phase**: Enhanced functionality implemented
 - **Focus**: Project discovery, compliance checking, reporting, and project type management
 
