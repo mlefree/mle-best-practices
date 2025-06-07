@@ -10,6 +10,9 @@
 - **Exclusion Rules**: Scripts respect the exclusion rules in bpstatus.json and don't update excluded projects
 - **Project Type Detection**: Projects are automatically classified as app, package, or standalone based on git branches
 - **Release Scripts Cleanup**: Unnecessary release scripts are removed based on project type
+- **Commit Management**: The squash-commits.js script allows merging all commits from a branch into one
+- **Release Verification**: The check-before-release.js script verifies project status before release
+- **Consolidated Reporting**: STATUS_ALL.gitignored.md provides comprehensive status information across all projects
 
 ## What's Left to Build
 1. **Additional Compliance Checks**:
@@ -36,7 +39,7 @@
    - Create a notification system for compliance changes
 
 ## Current Status
-- **Version**: 0.0.3 (Development in progress)
+- **Version**: 0.0.10 (Development in progress)
 - **Phase**: Enhanced functionality implemented
 - **Focus**: Project discovery, compliance checking, reporting, and project type management
 

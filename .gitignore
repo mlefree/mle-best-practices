@@ -34,9 +34,7 @@ typings/
 
 .env
 
-app/
 dist/
-
 .gen/
 
 *gitignored*

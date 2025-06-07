@@ -3,6 +3,6 @@
     "mle-tools-node": "file:../mle-tools-node/dist"
   },
   "remote.dependencies": {
-    "mle-tools-node": "^1.12.3"
+    "mle-tools-node": "^1.12.6"
   }
 }

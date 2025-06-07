@@ -7,12 +7,80 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added squash-commits.js script for merging all commits from a branch into one
+- Added check-before-release.js script to verify project status before release
+- Added support for project exclusion rules in bpstatus.json
+- Added comprehensive project status reporting in STATUS_ALL.gitignored.md
+
 ### Changed
 
-- Updated scripts for better compliance checking
-- Improved project type detection
+- Improved project type detection logic
 - Enhanced release scripts management
-- Updated common utility functions
+- Updated common utility functions for better reusability
+- Refined documentation in README.md and memory bank
+
+## [0.0.9] - 2025-05-24
+
+### Added
+
+- Added support for standalone project type
+- Added clean-release-scripts.js to remove unnecessary scripts based on project type
+
+### Changed
+
+- Improved project discovery mechanism
+- Enhanced reporting format in STATUS_ALL.gitignored.md
+
+## [0.0.8] - 2025-05-23
+
+### Added
+
+- Added check-all.js script to run all compliance checks and generate a consolidated report
+- Added support for project type detection (app, package, standalone)
+
+### Changed
+
+- Improved error handling in all scripts
+- Enhanced reporting with more detailed information
+
+## [0.0.7] - 2025-05-23
+
+### Added
+
+- Added check-scripts.js to verify and copy best practice scripts to projects
+- Added npm script for running all checks in sequence
+
+### Changed
+
+- Refactored common functionality for better code reuse
+- Improved project discovery performance
+
+## [0.0.6] - 2025-05-22
+
+### Added
+
+- Added check-memory-bank.js to verify memory bank documentation in projects
+- Added support for copying memory bank rules to other projects
+
+### Changed
+
+- Enhanced reporting with more detailed status information
+- Improved error handling in all scripts
+
+## [0.0.5] - 2025-05-21
+
+### Added
+
+- Added find-projects.js script to discover projects with bpstatus.json files
+- Added check-gitignore.js script to verify .gitignore compliance
+- Added support for environment variable configuration via dotenv
+
+### Changed
+
+- Refactored common functionality into shared methods
+- Improved reporting format with markdown tables
 
 ## [0.0.4] - 2025-05-20
 

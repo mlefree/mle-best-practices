@@ -4,7 +4,7 @@
 
 ![MLE Best Practices Logo](https://img.shields.io/badge/MLE-Best-Practices-blue?style=for-the-badge)
 
-[![Version](https://img.shields.io/badge/version-0.0.5-blue.svg)](https://github.com/mlefree/mle-best-practices)
+[![Version](https://img.shields.io/badge/version-0.0.10-blue.svg)](https://github.com/mlefree/mle-best-practices)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D22.x-brightgreen.svg)](https://nodejs.org)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
@@ -24,6 +24,9 @@
 - **Project Type Detection**: Automatically classify projects as app, package, or standalone
 - **Release Scripts Management**: Clean up unnecessary release scripts based on project type
 - **Exclusion Rules**: Selectively apply best practices checks to specific projects
+- **Commit Management**: Merge all commits from a branch into one with customizable messages
+- **Release Verification**: Verify project status before release to ensure compliance
+- **Consolidated Reporting**: View comprehensive status information across all projects
 
 ## 📋 Table of Contents
 
@@ -129,14 +132,20 @@ mle-best-practices/
 │   ├── check-memory-bank.js    # Script to check memory bank compliance
 │   ├── check-project-type.js   # Script to detect project types
 │   ├── clean-release-scripts.js # Script to clean release scripts
+│   ├── check-all.js            # Script to run all checks and generate a consolidated report
 │   ├── common.js               # Common utility functions
 │   └── bp/                     # BP scripts to copy to other projects
+│       ├── squash-commits.js   # Script to merge all commits from a branch into one
+│       ├── check-before-release.js # Script to verify project status before release
+│       ├── update-changelog-date.js # Script to update changelog dates from git tags
+│       └── switch-dependencies.js # Script to switch between local and remote dependencies
 ├── .env.example        # Template for environment configuration
 ├── .gitignore          # Git ignore file
 ├── CHANGELOG.md        # Project changelog
 ├── LICENSE             # Project license
 ├── README.md           # Project documentation
 ├── bpstatus.json       # Best practices status file for this project
+├── STATUS_ALL.gitignored.md # Consolidated report of all projects status
 └── package.json        # npm package configuration
 ```
 
