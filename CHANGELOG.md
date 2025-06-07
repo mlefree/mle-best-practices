@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.10] - 2025-06-07
+
 ### Added
 
 - Added squash-commits.js script for merging all commits from a branch into one
