@@ -2,10 +2,10 @@
 
 const fs = require('fs');
 const path = require('path');
-const common = require('./common');
+const common = require('./common.cjs');
 
 // Get the script name
-const scriptName = path.basename(__filename, '.js');
+const scriptName = path.basename(__filename, '.cjs');
 
 // Get the source memory-bank-rules.md file
 const memoryBankRulesPath = path.resolve(__dirname, '../.memory-bank/memory-bank-rules.md');

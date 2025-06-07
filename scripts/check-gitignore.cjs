@@ -2,10 +2,10 @@
 
 const fs = require('fs');
 const path = require('path');
-const common = require('./common');
+const common = require('./common.cjs');
 
 // Get the script name
-const scriptName = path.basename(__filename, '.js');
+const scriptName = path.basename(__filename, '.cjs');
 
 // Read the reference .gitignore file from this project
 const referenceGitignorePath = path.resolve(__dirname, '../.gitignore');

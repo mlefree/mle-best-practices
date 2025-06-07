@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 const path = require('path');
-const common = require('./common');
+const common = require('./common.cjs');
 
 // Get the script name
-const scriptName = path.basename(__filename, '.js');
+const scriptName = path.basename(__filename, '.cjs');
 
 // Define the processor function
 function processProject(project, bpStatus) {
