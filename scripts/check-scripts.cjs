@@ -36,7 +36,7 @@ try {
 let bpScriptFiles = [];
 try {
     bpScriptFiles = fs.readdirSync(bpScriptsDir)
-        .filter(file => file.endsWith('.js'))
+        .filter(file => file.endsWith('.cjs'))
         .map(file => ({
             name: file,
             path: path.join(bpScriptsDir, file)
