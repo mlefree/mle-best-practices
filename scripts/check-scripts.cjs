@@ -2,10 +2,10 @@
 
 const fs = require('fs');
 const path = require('path');
-const common = require('./common');
+const common = require('./common.cjs');
 
 // Get the script name
-const scriptName = path.basename(__filename, '.js');
+const scriptName = path.basename(__filename, '.cjs');
 
 // Get the source BP scripts directory
 const bpScriptsDir = path.resolve(__dirname, 'bp');
@@ -36,7 +36,7 @@ try {
 let bpScriptFiles = [];
 try {
     bpScriptFiles = fs.readdirSync(bpScriptsDir)
-        .filter(file => file.endsWith('.js'))
+        .filter(file => file.endsWith('.cjs'))
         .map(file => ({
             name: file,
             path: path.join(bpScriptsDir, file)

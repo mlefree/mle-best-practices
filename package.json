@@ -1,34 +1,44 @@
 {
   "name": "com.mlefree.best_practices",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "mle best practices",
   "author": "@mlefree",
   "engines": {
     "node": ">=22.x"
   },
+  "type": "module",
   "scripts": {
-    "bp:_clean": "rm -rf package-lock.json node_modules .gen .logs .nyc_output .logs .output.txt .coverage .angular dist disti app www && npm i",
-    "bp:bump": "OLD_VERSION=\"v$(node -e \"console.log(require('./package.json').version)\")\" && VERSION=\"$(npm version patch --no-git-tag-version)\" && npm i && echo \"export const bpInfo = {version:'$VERSION'}\" > ./src/bpInfo.ts && git tag $OLD_VERSION && git checkout -b $VERSION && git push origin refs/heads/$VERSION:$VERSION --tags && git push --set-upstream origin $VERSION",
-    "bp:update-changelog-dates": "node ./scripts/bp/update-changelog-date.js",
-    "bp:use-local-deps": "node ./scripts/bp/switch-dependencies.js local && npm run bp:_clean",
-    "bp:use-remote-deps": "node ./scripts/bp/switch-dependencies.js remote && npm run bp:_clean",
+    "bp:_clean": "rm -rf package-lock.json node_modules .gen .logs .nyc_output .logs .output.txt .coverage .angular dist disti www && npm i",
+    "bp:bump": "OLD_VERSION=\"v$(node -e \"console.log(require('./package.json').version)\")\" && VERSION=\"$(npm version patch --no-git-tag-version)\" && echo \"export const bpInfo = {version: '$VERSION'};\" > ./src/bpInfo.ts && git tag $OLD_VERSION && git checkout -b $VERSION && git push origin refs/heads/$VERSION:$VERSION --tags && git push --set-upstream origin $VERSION",
+    "bp:update-changelog-dates": "node ./scripts/bp/update-changelog-date.cjs",
+    "bp:style:lint-format-ts": "eslint src/ --fix && prettier --write \"src/**/*.ts\"",
+    "bp:use-local-deps": "node ./scripts/bp/switch-dependencies.cjs local && npm run bp:_clean",
+    "bp:use-remote-deps": "node ./scripts/bp/switch-dependencies.cjs remote && npm run bp:_clean",
     "bp:branch:push": "BRANCH=$(git rev-parse --abbrev-ref HEAD) && git add . && (git diff-index --quiet HEAD && echo 'No changes to commit' || (git commit -m \"$BRANCH pushed\" && git push))",
-    "bp:branch:squash": "node ./scripts/bp/squash-commits.js",
-    "bp:branch:check-before-release": "npm run bp:use-remote-deps && node ./scripts/bp/check-before-release.js",
+    "bp:branch:squash": "node ./scripts/bp/squash-commits.cjs",
+    "bp:branch:check-before-release": "npm run bp:use-remote-deps && node ./scripts/bp/check-before-release.cjs",
     "bp:branch:last-push:main": "npm run bp:branch:push && npm run bp:branch:squash && BRANCH=$(git rev-parse --abbrev-ref HEAD) && git checkout main && git merge $BRANCH && git push",
     "bp:main:package": "git checkout package && git merge main && git push && git checkout main",
     "bp:main:sandbox": "git checkout sandbox && git merge main && git push && git checkout main",
-    "DO-All": "node ./scripts/find-projects.js && node ./scripts/check-project-type.js && node ./scripts/check-gitignore.js && node ./scripts/check-memory-bank.js && node ./scripts/check-scripts.js && node ./scripts/check-all.js",
-    "find-projects": "node ./scripts/find-projects.js",
-    "check-project-type": "node ./scripts/check-project-type.js",
+    "DO-All": "node ./scripts/find-projects.cjs && node ./scripts/check-project-type.cjs && node ./scripts/check-gitignore.cjs && node ./scripts/check-memory-bank.cjs && node ./scripts/check-scripts.cjs && node ./scripts/check-style.cjs && node ./scripts/check-all.cjs",
+    "find-projects": "node ./scripts/find-projects.cjs",
+    "check-project-type": "node ./scripts/check-project-type.cjs",
     "build": "echo 'nothing to build.'",
     "test": "echo 'nothing to test.'"
   },
   "dependencies": {
     "dotenv": "^16.3.1",
-    "mle-tools-node": "^1.12.6"
+    "mle-tools-node": "^1.12.8"
   },
   "devDependencies": {
-    "mocha": "^11.4.0"
+    "mocha": "^11.4.0",
+    "mle-tools-configuration": "^1.0.13",
+    "eslint": "^9.28.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-prettier": "^5.4.1",
+    "prettier": "^3.5.3",
+    "@typescript-eslint/eslint-plugin": "^8.34.0",
+    "@typescript-eslint/parser": "^8.34.0"
   }
 }

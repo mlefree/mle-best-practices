@@ -7,10 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.11] - 2025-06-13
+
+### Changed
+
+- Updated memory bank documentation with latest project status
+- Updated README.md to reflect the latest version
+- Improved project documentation for better clarity
+
+## [0.0.10] - 2025-06-07
+
 ### Added
 
-- Added squash-commits.js script for merging all commits from a branch into one
-- Added check-before-release.js script to verify project status before release
+- Added squash-commits.cjs script for merging all commits from a branch into one
+- Added check-before-release.cjs script to verify project status before release
 - Added support for project exclusion rules in bpstatus.json
 - Added comprehensive project status reporting in STATUS_ALL.gitignored.md
 
@@ -26,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added support for standalone project type
-- Added clean-release-scripts.js to remove unnecessary scripts based on project type
+- Added clean-release-scripts.cjs to remove unnecessary scripts based on project type
 
 ### Changed
 
@@ -37,7 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added check-all.js script to run all compliance checks and generate a consolidated report
+- Added check-all.cjs script to run all compliance checks and generate a consolidated report
 - Added support for project type detection (app, package, standalone)
 
 ### Changed
@@ -49,7 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added check-scripts.js to verify and copy best practice scripts to projects
+- Added check-scripts.cjs to verify and copy best practice scripts to projects
 - Added npm script for running all checks in sequence
 
 ### Changed
@@ -61,7 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added check-memory-bank.js to verify memory bank documentation in projects
+- Added check-memory-bank.cjs to verify memory bank documentation in projects
 - Added support for copying memory bank rules to other projects
 
 ### Changed
@@ -73,8 +83,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added find-projects.js script to discover projects with bpstatus.json files
-- Added check-gitignore.js script to verify .gitignore compliance
+- Added find-projects.cjs script to discover projects with bpstatus.json files
+- Added check-gitignore.cjs script to verify .gitignore compliance
 - Added support for environment variable configuration via dotenv
 
 ### Changed
@@ -94,10 +104,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added `check-memory-bank.js` script to verify memory bank documentation
-- Added `check-scripts.js` script to verify scripts compliance
-- Added `check-project-type.js` script to identify project types
-- Added `clean-release-scripts.js` script to manage release scripts
+- Added `check-memory-bank.cjs` script to verify memory bank documentation
+- Added `check-scripts.cjs` script to verify scripts compliance
+- Added `check-project-type.cjs` script to identify project types
+- Added `clean-release-scripts.cjs` script to manage release scripts
 - Added npm script `check-project-type` to run the project type identification
 - Added npm script `all` to run all compliance checks in sequence
 
@@ -105,8 +115,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added `find-projects.js` script to discover projects with bpstatus.json files
-- Added `check-gitignore.js` script to verify .gitignore compliance in projects
+- Added `find-projects.cjs` script to discover projects with bpstatus.json files
+- Added `check-gitignore.cjs` script to verify .gitignore compliance in projects
 - Added npm script `find-projects` to run the discovery script
 - Added npm script `check-gitignore` to run the gitignore compliance check
 - Added dotenv dependency for environment variable management
@@ -116,9 +126,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Refactored common functionality into shared methods in common.js
+- Refactored common functionality into shared methods in common.cjs
 - Added formatDate() utility function for consistent date formatting
 - Added updateBpStatus() function to centralize bpstatus.json updates
 - Added copyFile() function for consistent file copying operations
-- Updated check-gitignore.js, check-scripts.js, and check-memory-bank.js to use common functions
+- Updated check-gitignore.cjs, check-scripts.cjs, and check-memory-bank.cjs to use common functions
 - Modified updateBpStatus() to use the version from package.json instead of hardcoded value

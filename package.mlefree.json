@@ -1,8 +1,10 @@
 {
   "local.dependencies": {
-    "mle-tools-node": "file:../mle-tools-node/dist"
+    "mle-tools-node": "file:../mle-tools-node/dist",
+    "mle-tools-configuration": "file:../mle-tools-configuration/dist"
   },
   "remote.dependencies": {
-    "mle-tools-node": "^1.12.6"
+    "mle-tools-node": "^1.12.9",
+    "mle-tools-configuration": "^1.0.13"
   }
 }

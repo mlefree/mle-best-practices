@@ -4,7 +4,7 @@
 
 ![MLE Best Practices Logo](https://img.shields.io/badge/MLE-Best-Practices-blue?style=for-the-badge)
 
-[![Version](https://img.shields.io/badge/version-0.0.10-blue.svg)](https://github.com/mlefree/mle-best-practices)
+[![Version](https://img.shields.io/badge/version-0.0.11-blue.svg)](https://github.com/mlefree/mle-best-practices)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D22.x-brightgreen.svg)](https://nodejs.org)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
@@ -126,19 +126,20 @@ The MLE Best Practices system follows a simple, modular architecture:
 mle-best-practices/
 ├── .memory-bank/       # AI memory bank files
 ├── scripts/            # JavaScript scripts
-│   ├── find-projects.js        # Script to find projects with bpstatus.json
-│   ├── check-gitignore.js      # Script to check .gitignore compliance
-│   ├── check-scripts.js        # Script to check scripts compliance
-│   ├── check-memory-bank.js    # Script to check memory bank compliance
-│   ├── check-project-type.js   # Script to detect project types
-│   ├── clean-release-scripts.js # Script to clean release scripts
-│   ├── check-all.js            # Script to run all checks and generate a consolidated report
-│   ├── common.js               # Common utility functions
+│   ├── find-projects.cjs        # Script to find projects with bpstatus.json
+│   ├── check-gitignore.cjs      # Script to check .gitignore compliance
+│   ├── check-scripts.cjs        # Script to check scripts compliance
+│   ├── check-style.cjs          # Script to check style files compliance
+│   ├── check-memory-bank.cjs    # Script to check memory bank compliance
+│   ├── check-project-type.cjs   # Script to detect project types
+│   ├── clean-release-scripts.cjs # Script to clean release scripts
+│   ├── check-all.cjs            # Script to run all checks and generate a consolidated report
+│   ├── common.cjs               # Common utility functions
 │   └── bp/                     # BP scripts to copy to other projects
-│       ├── squash-commits.js   # Script to merge all commits from a branch into one
-│       ├── check-before-release.js # Script to verify project status before release
-│       ├── update-changelog-date.js # Script to update changelog dates from git tags
-│       └── switch-dependencies.js # Script to switch between local and remote dependencies
+│       ├── squash-commits.cjs   # Script to merge all commits from a branch into one
+│       ├── check-before-release.cjs # Script to verify project status before release
+│       ├── update-changelog-date.cjs # Script to update changelog dates from git tags
+│       └── switch-dependencies.cjs # Script to switch between local and remote dependencies
 ├── .env.example        # Template for environment configuration
 ├── .gitignore          # Git ignore file
 ├── CHANGELOG.md        # Project changelog
