@@ -9,7 +9,25 @@ The current focus is on implementing and improving the project discovery and bes
 5. Updating documentation to reflect the new functionality
 
 ## Recent Changes
-1. Updated project version to 0.0.11:
+1. Updated project version to 0.0.13:
+   - Updated version in package.json
+   - Updated version in bpstatus.json
+   - Updated version badge in README.md
+   - Updated version in progress.md
+   - Updated CHANGELOG.md with new version entries
+   - Updated memory bank documentation with latest project status
+
+2. Updated project version to 0.0.12:
+   - Updated version in package.json
+   - Updated version in bpstatus.json
+   - Updated version badge in README.md
+   - Updated version in progress.md
+   - Updated CHANGELOG.md with new version entry
+   - Updated dependencies to latest versions
+   - Fixed minor issues in project discovery
+   - Enhanced reporting format
+
+3. Updated project version to 0.0.11:
    - Updated version in package.json
    - Updated version in bpstatus.json
    - Updated version badge in README.md

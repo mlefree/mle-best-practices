@@ -4,7 +4,7 @@
 
 ![MLE Best Practices Logo](https://img.shields.io/badge/MLE-Best-Practices-blue?style=for-the-badge)
 
-[![Version](https://img.shields.io/badge/version-0.0.11-blue.svg)](https://github.com/mlefree/mle-best-practices)
+[![Version](https://img.shields.io/badge/version-0.0.13-blue.svg)](https://github.com/mlefree/mle-best-practices)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D22.x-brightgreen.svg)](https://nodejs.org)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
