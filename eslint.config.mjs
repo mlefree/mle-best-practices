@@ -79,7 +79,7 @@ export default [
             '.coverage/**',
             '.nyc_output/**',
             'scripts/**',
-            '*.nolint.*',
+            '**/*.nolint.*',
         ],
     },
 ];
