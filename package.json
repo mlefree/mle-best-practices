@@ -1,17 +1,16 @@
 {
   "name": "com.mlefree.best_practices",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "mle best practices",
   "author": "@mlefree",
   "engines": {
-    "node": ">=22.x"
+    "node": ">=18.x"
   },
-  "type": "module",
   "scripts": {
     "bp:_clean": "rm -rf package-lock.json node_modules .gen .logs .nyc_output .logs .output.txt .coverage .angular dist disti www && npm i",
     "bp:bump": "OLD_VERSION=\"v$(node -e \"console.log(require('./package.json').version)\")\" && VERSION=\"$(npm version patch --no-git-tag-version)\" && echo \"export const bpInfo = {version: '$VERSION'};\" > ./src/bpInfo.ts && git tag $OLD_VERSION && git checkout -b $VERSION && git push origin refs/heads/$VERSION:$VERSION --tags && git push --set-upstream origin $VERSION",
     "bp:update-changelog-dates": "node ./scripts/bp/update-changelog-date.cjs",
-    "bp:style:lint-format-ts": "eslint --config .eslintrc.cjs 'src/**/*.ts' 'specs/**/*.ts' --fix --no-error-on-unmatched-pattern",
+    "bp:style:lint-format-ts": "eslint 'src/**/*.ts' 'specs/**/*.ts' --fix --no-error-on-unmatched-pattern",
     "bp:use-local-deps": "node ./scripts/bp/switch-dependencies.cjs local && npm run bp:_clean",
     "bp:use-remote-deps": "node ./scripts/bp/switch-dependencies.cjs remote && npm run bp:_clean",
     "bp:branch:push": "BRANCH=$(git rev-parse --abbrev-ref HEAD) && git add . && (git diff-index --quiet HEAD && echo 'No changes to commit' || (git commit -m \"$BRANCH pushed\" && git push))",
@@ -31,9 +30,11 @@
     "mle-tools-node": "^1.12.8"
   },
   "devDependencies": {
+    "@eslint/js": "^9.29.0",
+    "@eslint/eslintrc": "^3.3.1",
     "mocha": "^11.4.0",
     "mle-tools-configuration": "^1.0.13",
-    "eslint": "^8.57.1",
+    "eslint": "^9.29.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-prettier": "^5.4.1",

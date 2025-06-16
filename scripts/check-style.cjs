@@ -11,7 +11,7 @@ const scriptName = path.basename(__filename, '.cjs');
 // Get the source files paths
 const sourceDir = path.resolve(__dirname, '..');
 const prettierrcPath = path.join(sourceDir, '.prettierrc');
-const eslintConfigPath = path.join(sourceDir, '.eslintrc.cjs');
+const eslintConfigPath = path.join(sourceDir, 'eslint.config.mjs');
 
 // Check if source files exist
 if (!fs.existsSync(prettierrcPath)) {
@@ -20,16 +20,18 @@ if (!fs.existsSync(prettierrcPath)) {
 }
 
 if (!fs.existsSync(eslintConfigPath)) {
-    console.error(`Error: Source .eslintrc.cjs file not found at ${eslintConfigPath}`);
+    console.error(`Error: Source eslint.config.mjs file not found at ${eslintConfigPath}`);
     process.exit(1);
 }
 
 console.log(`Found source files to copy:`);
 console.log(`- .prettierrc: ${prettierrcPath}`);
-console.log(`- .eslintrc.cjs: ${eslintConfigPath}`);
+console.log(`- eslint.config.mjs: ${eslintConfigPath}`);
 
 // List of required devDependencies for ESLint and Prettier
 const requiredDevDependencies = [
+    '@eslint/js',
+    '@eslint/eslintrc',
     'eslint',
     'eslint-config-prettier',
     'eslint-plugin-import',
@@ -150,12 +152,16 @@ function copyStyleFiles(projectPath) {
             console.log(`Copied .prettierrc to ${path.basename(projectPath)}`);
         }
 
-        // Copy .eslintrc.cjs
-        const eslintConfigUpdated = common.copyFile(eslintConfigPath, projectPath, '.eslintrc.cjs');
+        // Copy eslint.config.mjs
+        const eslintConfigUpdated = common.copyFile(
+            eslintConfigPath,
+            projectPath,
+            'eslint.config.mjs'
+        );
         if (eslintConfigUpdated) {
             filesCopied++;
             filesUpdated = true;
-            console.log(`Copied .eslintrc.cjs to ${path.basename(projectPath)}`);
+            console.log(`Copied eslint.config.mjs to ${path.basename(projectPath)}`);
         }
 
         return {
