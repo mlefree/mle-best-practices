@@ -27,13 +27,13 @@
   },
   "dependencies": {
     "dotenv": "^16.3.1",
-    "mle-tools-node": "^1.12.8"
+    "mle-tools-node": "^1.12.15"
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",
     "@eslint/eslintrc": "^3.3.1",
     "mocha": "^11.4.0",
-    "mle-tools-configuration": "^1.0.13",
+    "mle-tools-configuration": "^1.0.15",
     "eslint": "^9.29.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-import": "^2.31.0",
