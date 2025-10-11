@@ -31,10 +31,9 @@ function generateRow(result) {
     // Get status for each check script
     const findProjects = result.statusUpdates['find-projects'] || '';
     const checkGitignore = result.statusUpdates['check-gitignore'] || '';
-    const checkMemoryBank = result.statusUpdates['check-memory-bank'] || '';
     const checkScripts = result.statusUpdates['check-scripts'] || '';
 
-    return `| ${result.projectName} | ${result.packageVersion} | ${result.projectType} | ${result.projectPath} | ${findProjects} | ${checkGitignore} | ${checkMemoryBank} | ${checkScripts} |\n`;
+    return `| ${result.projectName} | ${result.packageVersion} | ${result.projectType} | ${result.projectPath} | ${findProjects} | ${checkGitignore} | ${checkScripts} |\n`;
 }
 
 // Define the summary generator function
@@ -81,7 +80,6 @@ common.processProjects(
         'Project Path',
         'find-projects',
         'check-gitignore',
-        'check-memory-bank',
         'check-scripts',
     ],
     generateRow,

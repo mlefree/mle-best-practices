@@ -87,50 +87,18 @@ npm run DO-All
 
 After running the checks, you can view the generated comprehensive report in the following file:
 
-- `STATUS_ALL.gitignored.md`: Consolidated report containing all projects status information
-
-## 📚 Documentation
-
-### Memory Bank
-
-This project uses a Memory Bank for comprehensive documentation and context retention. The Memory Bank is located in the
-`.memory-bank` directory and contains the following files:
-
-- `memory-bank-rules.md`: Rules to follow and to consider in all contexts
-- `projectbrief.md`: Overview of the project, core requirements, and goals
-- `productContext.md`: Why the project exists, problems it solves, and how it works
-- `systemPatterns.md`: System architecture, key technical decisions, and design patterns
-- `techContext.md`: Technologies used, development setup, and technical constraints
-- `activeContext.md`: Current work focus, recent changes, and next steps
-- `progress.md`: What works, what's left to build, and known issues
-
-### System Architecture
-
-The MLE Best Practices system follows a simple, modular architecture:
-
-```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│                 │     │                 │     │                 │
-│  Configuration  │────▶│  Core Scripts   │────▶│    Reporting    │
-│                 │     │                 │     │                 │
-└─────────────────┘     └─────────────────┘     └─────────────────┘
-```
-
-1. **Configuration**: Environment variables and settings that control the behavior of the system
-2. **Core Scripts**: JavaScript modules that implement the core functionality
-3. **Reporting**: Output generation in various formats (currently markdown)
+- `STATUS_ALL.gitignored.md`: Consolidated [report](./STATUS_ALL.gitignored.md) containing all projects status
+  information
 
 ## 📁 Project Structure
 
 ```
 mle-best-practices/
-├── .memory-bank/       # AI memory bank files
 ├── scripts/            # JavaScript scripts
 │   ├── find-projects.cjs        # Script to find projects with bpstatus.json
 │   ├── check-gitignore.cjs      # Script to check .gitignore compliance
 │   ├── check-scripts.cjs        # Script to check scripts compliance
 │   ├── check-style.cjs          # Script to check style files compliance
-│   ├── check-memory-bank.cjs    # Script to check memory bank compliance
 │   ├── check-project-type.cjs   # Script to detect project types
 │   ├── clean-release-scripts.cjs # Script to clean release scripts
 │   ├── check-all.cjs            # Script to run all checks and generate a consolidated report

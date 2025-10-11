@@ -16,7 +16,7 @@ function formatDate() {
 /**
  * Updates a project's bpstatus.json file with a new version and date for the specified status field
  * @param {string} bpStatusPath - The path to the bpstatus.json file
- * @param {string} statusField - The status field to update (e.g., '.gitignore', 'scripts', '.memory-bank')
+ * @param {string} statusField - The status field to update (e.g., 'check-gitignore', 'check-scripts', 'check-style')
  * @returns {boolean} True if the update was successful, false otherwise
  */
 function updateBpStatus(bpStatusPath, statusField) {
