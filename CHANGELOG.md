@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- npm run bp:style:fix
+
+## [0.0.14] - 2025-10-11
+
+### Changed
+
 - Removed memory bank documentation => README only
 
 ## [0.0.13] - 2025-06-16

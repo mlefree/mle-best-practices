@@ -1,6 +1,6 @@
 {
   "name": "com.mlefree.best_practices",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "mle best practices",
   "author": "@mlefree",
   "engines": {
@@ -10,9 +10,7 @@
     "bp:_clean": "rm -rf package-lock.json node_modules .gen .logs .nyc_output .logs .output.txt .coverage .angular dist disti www && npm i",
     "bp:bump": "OLD_VERSION=\"v$(node -e \"console.log(require('./package.json').version)\")\" && VERSION=\"$(npm version patch --no-git-tag-version)\" && echo \"export const bpInfo = {version: '$VERSION'};\" > ./src/bpInfo.ts && git tag $OLD_VERSION && git checkout -b $VERSION && git push origin refs/heads/$VERSION:$VERSION --tags && git push --set-upstream origin $VERSION",
     "bp:update-changelog-dates": "node ./scripts/bp/update-changelog-date.cjs",
-    "bp:style:lint-format-ts": "eslint 'src/**/*.ts' 'specs/**/*.ts' --fix --no-error-on-unmatched-pattern",
-    "bp:style:lint-format-js": "eslint 'src/**/*.js' 'specs/**/*.js' --fix --no-error-on-unmatched-pattern",
-    "bp:style:format": "prettier --write \"src/**/*.ts\"",
+    "bp:style:fix": "eslint 'src/**/*.ts' 'specs/**/*.ts' --fix --no-error-on-unmatched-pattern && eslint 'src/**/*.js' 'specs/**/*.js' --fix --no-error-on-unmatched-pattern && prettier --write \"src/**/*.ts\" --no-error-on-unmatched-pattern && prettier --write \"src/**/*.js\" --no-error-on-unmatched-pattern",
     "bp:use-local-deps": "node ./scripts/bp/switch-dependencies.cjs local && npm run bp:_clean",
     "bp:use-remote-deps": "node ./scripts/bp/switch-dependencies.cjs remote && npm run bp:_clean",
     "bp:branch:push": "BRANCH=$(git rev-parse --abbrev-ref HEAD) && git add . && (git diff-index --quiet HEAD && echo 'No changes to commit' || (git commit -m \"$BRANCH pushed\" && git push))",
@@ -29,20 +27,20 @@
     "test": "echo 'nothing to test..'"
   },
   "dependencies": {
-    "dotenv": "^16.6.1",
-    "mle-tools-node": "^1.14.3"
+    "dotenv": "~17.2.3",
+    "mle-tools-node": "~1.15.2"
   },
   "devDependencies": {
-    "@eslint/js": "^9.33.0",
-    "@eslint/eslintrc": "^3.3.1",
-    "mocha": "^11.4.0",
-    "mle-tools-configuration": "^1.0.15",
-    "eslint": "^9.33.0",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-prettier": "^5.5.4",
-    "prettier": "^3.6.2",
-    "@typescript-eslint/eslint-plugin": "^8.40.0",
-    "@typescript-eslint/parser": "^8.40.0"
+    "@eslint/js": "~9.37.0",
+    "@eslint/eslintrc": "~3.3.1",
+    "mocha": "~11.7.4",
+    "mle-tools-configuration": "~1.0.15",
+    "eslint": "~9.37.0",
+    "eslint-config-prettier": "~10.1.8",
+    "eslint-plugin-import": "~2.32.0",
+    "eslint-plugin-prettier": "~5.5.4",
+    "prettier": "~3.6.2",
+    "@typescript-eslint/eslint-plugin": "~8.46.0",
+    "@typescript-eslint/parser": "~8.46.0"
   }
 }
