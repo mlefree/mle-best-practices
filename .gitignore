@@ -3,6 +3,8 @@
 lib-cov/
 coverage/
 .nyc_output/
+.claude/
+.cursor/
 bower_components/
 build/
 pids/
